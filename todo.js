@@ -1,22 +1,23 @@
 const datastore = [];
 const completed_list = [];
+const deleted_list = [];
 
 // Input functions:
-function add_task (add_task) {
+function add_task (new_task) {
   const id = datastore.length + 1;
-  const task = add_task;
+  const task = new_task;
   task.Id = id;
   task.Created_date = Date();
   task.isComplete = false;
   datastore.push(task);
 }
 
-function edit_task(edit_task) {
+function edit_task(task) {
   for(let i = 0; i < datastore.length; i++){
-    if(edit_task.Id === datastore[i].Id){
-      datastore[i].Name = edit_task.Name;
-      datastore[i].Description = edit_task.Description;
-      datastore[i].Due_date = edit_task.Due_date;
+    if(task.Id === datastore[i].Id){
+      datastore[i].Name = task.Name;
+      datastore[i].Description = task.Description;
+      datastore[i].Due_date = task.Due_date;
     }
   }
 }
@@ -24,10 +25,10 @@ function edit_task(edit_task) {
 function delete_task(delete_task) {
   for(let i = 0; i < datastore.length; i++){ 
     if(delete_task.Id === datastore[i].Id){
+      deleted_list.push(datastore[i]);
       delete datastore[i];
     }
   }
-  console.log('Task deleted');
 }
 
 function complete_task(complete_task){
@@ -66,7 +67,8 @@ function list_completed () {
 } 
 
 function list_deleted () {
-
+  console.log("Deleted Tasks:")
+  console.log(deleted_list);
 }
 
 function list_active () {
@@ -92,8 +94,8 @@ task_1_delete = {
   Id: 2
 }
 
-complete_task(task_1)
+//complete_task(task_1)
 
 list_completed();
-
-
+delete_task(task_1);
+list_deleted();
