@@ -1,6 +1,17 @@
+const fs = require('fs');
 const datastore = [];
 const completed_list = [];
 const deleted_list = [];
+
+
+fs.readFile('/tmp/test', (err, data) => {
+  if(err) {
+    throw err;  
+  }
+  let info = JSON.parse(data);
+  console.log(info);
+  console.log('Message successfully parsed back from JSON');
+});
 
 // Input functions:
 function add_task (new_task) {
@@ -96,6 +107,20 @@ task_1_delete = {
 
 //complete_task(task_1)
 
-list_completed();
-delete_task(task_1);
-list_deleted();
+//list_completed();
+//delete_task(task_1);
+//list_deleted();
+
+console.log(JSON.stringify(datastore));
+
+
+fs.writeFile('/tmp/test', JSON.stringify(datastore), function(err) {
+  if(err) {
+    return console.log(err);
+  }
+  console.log("The file was saved");
+})
+
+
+
+
