@@ -1,9 +1,10 @@
 const fs = require('fs');
+const linebyline = require('readline');
 const datastore = [];
 const completed_list = [];
 const deleted_list = [];
 
-
+// Read file and write state to disk:
 fs.readFile('/tmp/test', (err, data) => {
   if(err) {
     throw err;  
@@ -13,6 +14,25 @@ fs.readFile('/tmp/test', (err, data) => {
   console.log('Message successfully parsed back from JSON');
 });
 
+// Command line input information: Task, description, due date:
+linebyline
+  .createInterface({
+    input: process.stdin,
+    output: process.stdout
+ })
+  .on('line', handleResponse);
+
+ prompt();
+
+function prompt() {
+  process.stdout.write('\nTask Description?\n');
+}
+
+function handleResponse (input) {
+  const response = input.trim().toLowerCase();
+
+  console.log(response);
+}
 // Input functions:
 function add_task (new_task) {
   const id = datastore.length + 1;
@@ -92,7 +112,7 @@ task_1 = {
   Due_date: "12/21/19"
 }
 
-add_task(task_1);
+//add_task(task_1);
 
 edit_task_1 = {
   Name: "New test task",
@@ -111,7 +131,7 @@ task_1_delete = {
 //delete_task(task_1);
 //list_deleted();
 
-console.log(JSON.stringify(datastore));
+//console.log(JSON.stringify(datastore));
 
 
 fs.writeFile('/tmp/test', JSON.stringify(datastore), function(err) {
@@ -120,7 +140,3 @@ fs.writeFile('/tmp/test', JSON.stringify(datastore), function(err) {
   }
   console.log("The file was saved");
 })
-
-
-
-
