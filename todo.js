@@ -3,6 +3,9 @@ const linebyline = require('readline');
 const datastore = [];
 const completed_list = [];
 const deleted_list = [];
+let count = 0;
+const newObj = {};
+
 
 // Read file and write state to disk:
 fs.readFile('/tmp/test', (err, data) => {
@@ -10,8 +13,8 @@ fs.readFile('/tmp/test', (err, data) => {
     throw err;  
   }
   let info = JSON.parse(data);
-  console.log(info);
-  console.log('Message successfully parsed back from JSON');
+  //console.log(info);
+  //console.log('Message successfully parsed back from JSON');
 });
 
 // Command line input information: Task, description, due date:
@@ -25,13 +28,35 @@ linebyline
  prompt();
 
 function prompt() {
-  process.stdout.write('\nTask Description?\n');
+  process.stdout.write('\nTask Title?\n');
 }
 
 function handleResponse (input) {
-  const response = input.trim().toLowerCase();
+  const response = input.trim();
+  if(count == 0) {
+    process.stdout.write('\nAdd description?\n');
+    newObj.Name = response;
+    console.log(newObj);
+  } else if (count == 1) {
+    newObj.Description = response; 
+    console.log(newObj);
+    dueDate();
+  } else {
+    newObj.Due_date = response; 
+    console.log(newObj);
+    add_task(newObj);
+    list_tasks();
+  }
+  count++; 
+  console.log(count);
+  //console.log(newObj);
+  //} else {
+   // dueDate();
+  //}
+}
 
-  console.log(response);
+function dueDate() {
+    process.stdout.write('\nDue date?\n');  
 }
 // Input functions:
 function add_task (new_task) {
@@ -138,5 +163,5 @@ fs.writeFile('/tmp/test', JSON.stringify(datastore), function(err) {
   if(err) {
     return console.log(err);
   }
-  console.log("The file was saved");
+  //console.log("The file was saved");
 })
