@@ -34,20 +34,24 @@ function prompt() {
 function handleResponse (input) {
   const response = input.trim();
   if(count == 0) {
-    process.stdout.write('\nAdd description?\n');
+    process.stdout.write('\nDescription?\n');
     newObj.Name = response;
     console.log(newObj);
   } else if (count == 1) {
     newObj.Description = response; 
     console.log(newObj);
     dueDate();
-  } else {
+  } else if (count == 2){
     newObj.Due_date = response; 
     console.log(newObj);
     add_task(newObj);
     list_tasks();
   }
   count++; 
+  if (count > 2) {
+    prompt();
+    count = 0;
+  }
   console.log(count);
   //console.log(newObj);
   //} else {
