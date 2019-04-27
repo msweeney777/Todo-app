@@ -38,8 +38,12 @@ if(command == 'add') {
   completeTask(description);
 } else if (command == 'completed') {
   listCompleted();
+} else if (command == 'deleted') {
+  listDeleted();
+} else if (command == 'delete-logs') {
+  clearLogs();
 } else {
-  console.log('Error: Input not recognized ');
+  console.log('Error: Input not recognized. Type help for commands and proper command line syntax.');
 }
 
 //In case there is nothing written into the JSON file:
@@ -103,17 +107,21 @@ function deleteTask(id) {
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
     let stat = JSON.parse(data);
-    if(stat.todos.length > 1) {
-      stat.todos = stat.todos.filter((el) =>  {return el.id != id})
-    } else {
-      stat.todos.pop(); 
-    }
 
+    let rawdata = fs.readFileSync('deletedList.json');
+    let statDel = JSON.parse(rawdata);
+     
+    statDel.deleted.push((stat.todos.filter((el) =>  {return el.id == id}).pop()));
+
+    rawdata = JSON.stringify(statDel, null, 2);
+    fs.writeFileSync('deletedList.json', rawdata);
+
+    stat.todos = stat.todos.filter((el) =>  {return el.id != id})
     data = JSON.stringify(stat, null, 2);
     
     fs.writeFile('datastore.json', data, (err) => {
-      if(err) throw err; 
-      console.log("Task removed.");  
+    if(err) throw err; 
+    console.log("Task deleted."); 
     listTasks();
     })
   })
@@ -129,27 +137,22 @@ function completeTask(id){
         stat.todos[el].done = true;
       }
     }
-    let completed = [];
-    if(stat.todos.length > 1) {
-      completed = stat.todos.filter((el) =>  {return el.done == true})
-      stat.todos = stat.todos.filter((el) =>  {return el.done == false})
-    } else {
-      completed = stat.todos.pop(); 
-      stat.todos = stat.todos.pop();
-    }
-    //console.log(completed);
+     
+    let rawdata = fs.readFileSync('completedList.json');
+    let statComp = JSON.parse(rawdata);
+     
+    statComp.completed.push((stat.todos.filter((el) =>  {return el.done == true}).pop()));
 
+    rawdata = JSON.stringify(statComp, null, 2);
+    fs.writeFileSync('completedList.json', rawdata);
+
+    stat.todos = stat.todos.filter((el) =>  {return el.done == false})
     data = JSON.stringify(stat, null, 2);
     
     fs.writeFile('datastore.json', data, (err) => {
     if(err) throw err; 
     console.log("Task updated."); 
     listTasks();
-    })
-
-    data = JSON.stringify(completed, null, 2);
-    fs.writeFile('completedList.json', data, (err) => {
-    if(err) throw err; 
     })
   })
 }
@@ -180,9 +183,37 @@ function listCompleted () {
 } 
 
 function listDeleted () {
+  fs.readFile('deletedList.json', (err, data) => {
+    if(err) throw err;   
+    let statDel = JSON.parse(data);
 
+    statDel.deleted.forEach(({id, task, done, description}) => {
+      console.log(`${chalk.magenta(id)} ${done ? chalk.green('DONE') : chalk.yellowBright('NOT DONE')} - ${chalk.whiteBright(task)} : \n${description}`);
+    })
+  })
 }
 
+//Miscellaneous functions:
+
 function help () {
-  console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nlist`)
+  console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nremove --id [id#]\nlist \ncompleted \ndeleted \ndelete-logs`)
+}
+
+function clearLogs() {
+  let delData = fs.readFileSync('deletedList.json');
+  let compData = fs.readFileSync('completedList.json');
+
+  let statDel = JSON.parse(delData);
+  let statComp = JSON.parse(compData);
+
+  statDel.deleted = statDel.deleted.filter((el) =>  {return el.done == false})
+  statDel.deleted = statDel.deleted.filter((el) =>  {return el.done == true})
+  statComp.completed = statComp.completed.filter((el) =>  {return el.done == false})
+  statComp.completed = statComp.completed.filter((el) =>  {return el.done == true})
+
+  delData = JSON.stringify(statDel, null, 2);
+  compData = JSON.stringify(statComp, null, 2);
+  fs.writeFileSync('deletedList.json', delData);
+  fs.writeFileSync('completedList.json', compData);
+  console.log('Logs deleted');
 }
