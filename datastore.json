@@ -1,36 +1,17 @@
 {
   "todos": [
     {
-      "task": "list",
-      "id": 0,
-      "Created_date": "Thu Apr 25 2019 21:14:26 GMT-0400 (Eastern Daylight Time)",
-      "done": false
-    },
-    {
-      "task": "list",
+      "task": "Make bed",
+      "description": "Get clean sheets",
       "id": 2,
-      "Created_date": "Thu Apr 25 2019 21:17:31 GMT-0400 (Eastern Daylight Time)",
+      "Created_date": "Fri Apr 26 2019 12:02:46 GMT-0400 (Eastern Daylight Time)",
       "done": false
     },
     {
-      "task": "New task",
-      "description": "Task description",
-      "id": 3,
-      "Created_date": "Thu Apr 25 2019 21:25:43 GMT-0400 (Eastern Daylight Time)",
-      "done": false
-    },
-    {
-      "task": "Next task",
-      "description": "Another example task description",
-      "id": 3,
-      "Created_date": "Thu Apr 25 2019 21:31:10 GMT-0400 (Eastern Daylight Time)",
-      "done": false
-    },
-    {
-      "task": "Next task",
-      "description": "Another example task description",
-      "id": 4,
-      "Created_date": "Thu Apr 25 2019 21:31:38 GMT-0400 (Eastern Daylight Time)",
+      "task": "Go to the grocery store",
+      "description": "Buy sushi",
+      "id": 1,
+      "Created_date": "Sat Apr 27 2019 10:09:36 GMT-0400 (Eastern Daylight Time)",
       "done": false
     }
   ]
