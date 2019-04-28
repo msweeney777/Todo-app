@@ -14,7 +14,7 @@ const updateDes = (process.argv.slice(6, 7)).pop();
 //let data = fs.readFileSync('/tmp/test') 
 //let info = JSON.parse(data);
 
-// For connecting parsed command/inputs with the pertinent function and output
+// For connecting parsed command/inputs with its pertinent function and output
 if(command == 'add') {
   addTask(task, description);
 } else if(command == 'remove' && task == "--id" && !isNaN(description)) {
@@ -37,7 +37,7 @@ if(command == 'add') {
   console.log('Error: Input not recognized. Type help for commands and proper command line syntax.');
 }
 
-//In case there is nothing written into the JSON file; stored info needs to be
+//In case there is nothing written into the JSON file or stored info needs to be
 //erased:
 function setDefault () {
   let info = {todos: [], completed: [], deleted: []};
@@ -45,13 +45,13 @@ function setDefault () {
 
   fs.writeFile('datastore.json', data, (err) => {
     if (err) throw err;
-    console.log('Default written to file');
+    console.log('Default rest');
   })
 }
 
 // Input functions:
 
-// Writes a task object to the datastore JSON file
+// Writes a task object to the datastore file
 function addTask (task, description) {
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
@@ -64,6 +64,7 @@ function addTask (task, description) {
       Created_date: Date(),
       done: false
     });
+
     data = JSON.stringify(stat, null, 2);
     fs.writeFile('datastore.json', data, (err) => {
       if(err) throw err; 
@@ -72,8 +73,8 @@ function addTask (task, description) {
     })
   })
 }
-//Finds the task object with the matching id and edits both the task title and
-//task description
+//Finds the task object with the matching id and allows the user to edit both the task title and
+//task description from command line
 function editTask(id) {
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
@@ -139,7 +140,7 @@ function completeTask(id){
 
 // Output functions:
 
-// Shows a list of tasks stored in the datastore.json file on command
+// Shows the list of unfinished tasks in the datastore.json file
 function listTasks () { 
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
@@ -151,6 +152,8 @@ function listTasks () {
   })
 }
 
+// Shows a list of completed tasks which have been removed from the nested
+// 'todos' array and put into the the 'completed' array
 function listCompleted () {
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
@@ -162,6 +165,8 @@ function listCompleted () {
   })
 } 
 
+// Shows the list of deleted tasks that have been moved from the 'todos' array
+// to the 'deleted' array
 function listDeleted () {
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
@@ -175,6 +180,7 @@ function listDeleted () {
 
 //Miscellaneous functions:
 
+// Prints the cli commands
 function help () {
   console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nremove --id [id#]\nlist \ncompleted \ndeleted \ndefault`)
 }
