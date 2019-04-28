@@ -9,19 +9,10 @@ const description = (process.argv.slice(4, 5)).pop();
 const update = (process.argv.slice(5, 6)).pop();
 const updateDes = (process.argv.slice(6, 7)).pop();
 
-// Read file and write state to disk:
+// Read file from disk:
 //
-//fs.readFile('/tmp/test', (err, data) => {
-//  if(err) throw err;  
-//  
-//  let info = JSON.parse(data);
-//
-//  data = JSON.stringify(info, null, 2);
-//
-//  fs.writeFile('/tmp/test', data, (err) => {
-//    if(err) throw err;    
-//  })
-//});
+//let data = fs.readFileSync('/tmp/test') 
+//let info = JSON.parse(data);
 
 // For connecting parsed command/inputs with the pertinent function and output
 if(command == 'add') {
@@ -32,7 +23,7 @@ if(command == 'add') {
   help();
 } else if(command == 'list') {
   listTasks();
-} else if (command == 'edit') {
+} else if (command == 'edit' && task == "--id" && !isNaN(description)) {
   editTask(description);
 }  else if (command == 'update' && task == "--id" && !isNaN(description)) {
   completeTask(description);
@@ -40,15 +31,16 @@ if(command == 'add') {
   listCompleted();
 } else if (command == 'deleted') {
   listDeleted();
-} else if (command == 'delete-logs') {
-  clearLogs();
+} else if (command == 'default') {
+  setDefault();
 } else {
   console.log('Error: Input not recognized. Type help for commands and proper command line syntax.');
 }
 
-//In case there is nothing written into the JSON file:
+//In case there is nothing written into the JSON file; stored info needs to be
+//erased:
 function setDefault () {
-  let info = {todos: []};
+  let info = {todos: [], completed: [], deleted: []};
   let data = JSON.stringify(info, null, 2);
 
   fs.writeFile('datastore.json', data, (err) => {
@@ -107,14 +99,8 @@ function deleteTask(id) {
   fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
     let stat = JSON.parse(data);
-
-    let rawdata = fs.readFileSync('deletedList.json');
-    let statDel = JSON.parse(rawdata);
      
-    statDel.deleted.push((stat.todos.filter((el) =>  {return el.id == id}).pop()));
-
-    rawdata = JSON.stringify(statDel, null, 2);
-    fs.writeFileSync('deletedList.json', rawdata);
+    stat.deleted.push((stat.todos.filter((el) =>  {return el.id == id}).pop()));
 
     stat.todos = stat.todos.filter((el) =>  {return el.id != id})
     data = JSON.stringify(stat, null, 2);
@@ -138,13 +124,7 @@ function completeTask(id){
       }
     }
      
-    let rawdata = fs.readFileSync('completedList.json');
-    let statComp = JSON.parse(rawdata);
-     
-    statComp.completed.push((stat.todos.filter((el) =>  {return el.done == true}).pop()));
-
-    rawdata = JSON.stringify(statComp, null, 2);
-    fs.writeFileSync('completedList.json', rawdata);
+    stat.completed.push((stat.todos.filter((el) =>  {return el.done == true}).pop()));
 
     stat.todos = stat.todos.filter((el) =>  {return el.done == false})
     data = JSON.stringify(stat, null, 2);
@@ -172,7 +152,7 @@ function listTasks () {
 }
 
 function listCompleted () {
-  fs.readFile('completedList.json', (err, data) => {
+  fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
     let stat = JSON.parse(data); 
 
@@ -183,11 +163,11 @@ function listCompleted () {
 } 
 
 function listDeleted () {
-  fs.readFile('deletedList.json', (err, data) => {
+  fs.readFile('datastore.json', (err, data) => {
     if(err) throw err;   
-    let statDel = JSON.parse(data);
+    let stat = JSON.parse(data);
 
-    statDel.deleted.forEach(({id, task, done, description}) => {
+    stat.deleted.forEach(({id, task, done, description}) => {
       console.log(`${chalk.magenta(id)} ${done ? chalk.green('DONE') : chalk.yellowBright('NOT DONE')} - ${chalk.whiteBright(task)} : \n${description}`);
     })
   })
@@ -196,24 +176,9 @@ function listDeleted () {
 //Miscellaneous functions:
 
 function help () {
-  console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nremove --id [id#]\nlist \ncompleted \ndeleted \ndelete-logs`)
+  console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nremove --id [id#]\nlist \ncompleted \ndeleted \ndefault`)
 }
 
-function clearLogs() {
-  let delData = fs.readFileSync('deletedList.json');
-  let compData = fs.readFileSync('completedList.json');
-
-  let statDel = JSON.parse(delData);
-  let statComp = JSON.parse(compData);
-
-  statDel.deleted = statDel.deleted.filter((el) =>  {return el.done == false})
-  statDel.deleted = statDel.deleted.filter((el) =>  {return el.done == true})
-  statComp.completed = statComp.completed.filter((el) =>  {return el.done == false})
-  statComp.completed = statComp.completed.filter((el) =>  {return el.done == true})
-
-  delData = JSON.stringify(statDel, null, 2);
-  compData = JSON.stringify(statComp, null, 2);
-  fs.writeFileSync('deletedList.json', delData);
-  fs.writeFileSync('completedList.json', compData);
-  console.log('Logs deleted');
-}
+//Write file to disk
+//data = JSON.stringify(info, null, 2);
+//fs.writeFileSync('/tmp/test', data);
