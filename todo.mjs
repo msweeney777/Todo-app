@@ -180,7 +180,6 @@ function listDeleted () {
 
 //Miscellaneous functions:
 
-// Prints the cli commands
 function help () {
   console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nremove --id [id#]\nlist \ncompleted \ndeleted \ndefault`)
 }
