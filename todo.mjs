@@ -9,10 +9,9 @@ const description = (process.argv.slice(4, 5)).pop();
 const update = (process.argv.slice(5, 6)).pop();
 const updateDes = (process.argv.slice(6, 7)).pop();
 
-// Read file from disk:
-//
-//let data = fs.readFileSync('/tmp/test') 
-//let info = JSON.parse(data);
+// Read and write state to disk:
+let data = fs.readFileSync('todo.mjs');
+fs.writeFileSync('/tmp/test', data);
 
 // For connecting parsed command/inputs with its pertinent function and output
 if(command == 'add') {
@@ -183,7 +182,3 @@ function listDeleted () {
 function help () {
   console.log(`Commands are as follows: \nadd [task] [task description] \nedit --id [id#] [task] [task description] \nupdate --id [id#] \nremove --id [id#]\nlist \ncompleted \ndeleted \ndefault`)
 }
-
-//Write file to disk
-//data = JSON.stringify(info, null, 2);
-//fs.writeFileSync('/tmp/test', data);
