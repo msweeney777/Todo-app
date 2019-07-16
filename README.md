@@ -30,3 +30,10 @@ Now for further experimental indentation:
   -Or minuses
 
   +Or pluses
+
+Experimenting with properly highlighted syntax:
+
+```javascript
+var s = "JavaScript syntax highlighting";
+alter(s)
+```
