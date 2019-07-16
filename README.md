@@ -22,7 +22,7 @@ Now for some lists:
 
 Now for further experimental indentation:  
 
-  For proper indentation, use the space-bar three times. Also keep in mind that the space between text as in the case above causes a space between text in markdown.
+...For proper indentation, use the space-bar three times. Also keep in mind that the space between text as in the case above causes a space between text in markdown.
    For a line break without a paragraph, two trailing spaces are needed at the end of a sentence.  Post trailing spaces.  This line is also seperate but still part of the paragraph.
 
   *By the way, unordered lists can use asterisk
